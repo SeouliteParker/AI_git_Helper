@@ -283,6 +283,7 @@ python main.py commit --safe-mode
 __pycache__/
 *.pyc
 .env
+.venv/
 ```
 
 ---
