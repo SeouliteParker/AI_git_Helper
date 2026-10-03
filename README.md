@@ -85,7 +85,7 @@ AI_git_Helper/
 │
 ├─ main.py
 ├─ ai_client.py
-├─ git_utils.py
+├─ utils.py
 ├─ requirements.txt
 ├─ .gitignore
 └─ README.md
