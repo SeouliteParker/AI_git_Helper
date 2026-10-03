@@ -1,7 +1,9 @@
 import os
+
 from google import genai
 from google.genai import types
 from google.genai import errors
+
 
 def get_api_key():
     api_key = os.getenv("GEMINI_API_KEY")
@@ -20,11 +22,11 @@ def generate_commit_message(
     temperature=0.3,
     max_tokens=500
 ):
-    api_key = get_api_key()
+    try:
+        api_key = get_api_key()
+        client = genai.Client(api_key=api_key)
 
-    client = genai.Client(api_key=api_key)
-
-    prompt = f"""
+        prompt = f"""
 아래 Git diff를 분석해서 커밋 메시지를 작성해줘.
 
 조건:
@@ -38,7 +40,6 @@ Git diff:
 {diff_text}
 """
 
-    try:
         response = client.models.generate_content(
             model=model,
             contents=prompt,
@@ -50,6 +51,9 @@ Git diff:
 
         return response.text
 
+    except ValueError as e:
+        return f'[ERROR] {e}\n예) $env:GEMINI_API_KEY="YOUR_KEY"'
+
     except errors.ClientError as e:
         return f"[ERROR] AI API 요청 오류: {e}"
 
@@ -58,6 +62,7 @@ Git diff:
 
     except Exception as e:
         return f"[ERROR] AI API 호출 실패: {e}"
+
 
 def generate_pr_draft(
     diff_text,
@@ -114,10 +119,8 @@ Git diff:
 
         # 필수 섹션이 빠졌으면 한 번만 다시 생성
         if not all(section in result for section in required_sections):
-
             retry_prompt = f"""
 이전 결과가 PR 형식을 지키지 않았습니다.
-
 아래 형식 외에는 출력하지 마세요.
 
 PR 제목: 변경 내용을 나타내는 한 줄
@@ -150,6 +153,9 @@ Git diff:
 
         return result
 
+    except ValueError as e:
+        return f'[ERROR] {e}\n예) $env:GEMINI_API_KEY="YOUR_KEY"'
+
     except errors.ClientError as e:
         return f"[ERROR] AI API 요청 오류: {e}"
 
@@ -158,4 +164,3 @@ Git diff:
 
     except Exception as e:
         return f"[ERROR] AI API 호출 실패: {e}"
-
