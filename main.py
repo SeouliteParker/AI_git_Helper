@@ -2,6 +2,9 @@ import argparse
 
 from utils import get_git_status, get_git_diff, limit_diff
 
+from ai_client import generate_commit_message, generate_pr_draft
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Git 변경 사항을 분석해 AI가 Commit/PR 초안을 생성하는 도구"
@@ -15,7 +18,7 @@ def main():
 
     parser.add_argument(
         "--model",
-        default="gpt-5.6",
+        default="gemini-3.8-flash",
         help="사용할 AI 모델"
     )
 
@@ -29,7 +32,7 @@ def main():
     parser.add_argument(
         "--max-tokens",
         type=int,
-        default=500,
+        default=2000,
         help="AI가 생성할 최대 토큰 수"
     )
 
@@ -67,8 +70,28 @@ def main():
     if args.command == "commit":
         print("[INFO] 커밋 메시지 생성을 시작합니다.")
 
+        commit_message = generate_commit_message(
+            git_diff,
+            model=args.model,
+            temperature=args.temperature,
+            max_tokens=args.max_tokens
+        )
+
+        print("\n[RESULT] 생성된 커밋 메시지")
+        print(commit_message)
+
     elif args.command == "pr":
         print("[INFO] PR 초안 생성을 시작합니다.")
+
+        pr_draft = generate_pr_draft(
+            git_diff,
+            model=args.model,
+            temperature=args.temperature,
+            max_tokens=args.max_tokens
+        )
+
+        print("\n[RESULT] 생성된 PR 초안")
+        print(pr_draft)
 
 
 if __name__ == "__main__":
