@@ -58,12 +58,12 @@ def main():
     # Git diff 수집
     git_diff = get_git_diff()
 
-    print("[INFO] Git diff 수집 완료")
-    print(git_diff)
-
     if args.safe_mode:
         git_diff = limit_diff(git_diff, max_lines=200)
         print("[INFO] Safe Mode 적용: diff를 최대 200줄로 제한했습니다.")
+
+    print("[INFO] Git diff 수집 완료")
+    print(git_diff)
 
     # CLI 옵션 확인
     print(f"[INFO] Model: {args.model}")
