@@ -106,7 +106,7 @@ pr
 
 ---
 
-### git_utils.py
+### utils.py
 
 Git 저장소의 정보를 가져오는 역할을 담당합니다.
 

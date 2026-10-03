@@ -58,9 +58,6 @@ def main():
     # Git diff 수집
     git_diff = get_git_diff()
 
-    if args.safe_mode:
-        git_diff = limit_diff(git_diff)
-
     print("[INFO] Git diff 수집 완료")
     print(git_diff)
 
